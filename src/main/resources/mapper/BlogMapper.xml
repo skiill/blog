@@ -1,23 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xsj.blog.dao.BlogMapper" >
-  <resultMap id="BaseResultMap" type="com.xsj.blog.model.Blog" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="title" property="title" jdbcType="VARCHAR" />
-    <result column="a_id" property="aId" jdbcType="INTEGER" />
-    <result column="createtime" property="createtime" jdbcType="DATE" />
-    <result column="update" property="update" jdbcType="DATE" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xsj.blog.dao.BlogMapper">
+  <resultMap id="BaseResultMap" type="com.xsj.blog.model.Blog">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="a_id" jdbcType="INTEGER" property="aId" />
+    <result column="createtime" jdbcType="DATE" property="createtime" />
+    <result column="update" jdbcType="DATE" property="update" />
+    <result column="start" jdbcType="INTEGER" property="start" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.xsj.blog.model.Blog" extends="BaseResultMap" >
-    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xsj.blog.model.Blog">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, title, a_id, createtime, update
+  <sql id="Base_Column_List">
+    id, title, a_id, createtime, update, start
   </sql>
-  <sql id="Blob_Column_List" >
+  <sql id="Blob_Column_List">
     content
   </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
     ,
@@ -25,11 +26,139 @@
     from b_blog
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from b_blog
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.xsj.blog.model.Blog" >
+  <insert id="insert" parameterType="com.xsj.blog.model.Blog">
+    insert into b_blog (id, title, a_id, 
+      createtime, update, start, 
+      content)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{aId,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=DATE}, #{update,jdbcType=DATE}, #{start,jdbcType=INTEGER}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xsj.blog.model.Blog">
+    insert into b_blog
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="aId != null">
+        a_id,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="update != null">
+        update,
+      </if>
+      <if test="start != null">
+        start,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="aId != null">
+        #{aId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=DATE},
+      </if>
+      <if test="update != null">
+        #{update,jdbcType=DATE},
+      </if>
+      <if test="start != null">
+        #{start,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xsj.blog.model.Blog">
+    update b_blog
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="aId != null">
+        a_id = #{aId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=DATE},
+      </if>
+      <if test="update != null">
+        update = #{update,jdbcType=DATE},
+      </if>
+      <if test="start != null">
+        start = #{start,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xsj.blog.model.Blog">
+    update b_blog
+    set title = #{title,jdbcType=VARCHAR},
+      a_id = #{aId,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=DATE},
+      update = #{update,jdbcType=DATE},
+      start = #{start,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xsj.blog.model.Blog">
+    update b_blog
+    set title = #{title,jdbcType=VARCHAR},
+      a_id = #{aId,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=DATE},
+      update = #{update,jdbcType=DATE},
+      start = #{start,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <resultMap id="BaseResultMap" type="com.xsj.blog.model.Blog">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="a_id" jdbcType="INTEGER" property="aId" />
+    <result column="createtime" jdbcType="DATE" property="createtime" />
+    <result column="update" jdbcType="DATE" property="update" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xsj.blog.model.Blog">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, a_id, createtime, update
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from b_blog
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from b_blog
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xsj.blog.model.Blog">
     insert into b_blog (id, title, a_id, 
       createtime, update, content
       )
@@ -37,71 +166,71 @@
       #{createtime,jdbcType=DATE}, #{update,jdbcType=DATE}, #{content,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.xsj.blog.model.Blog" >
+  <insert id="insertSelective" parameterType="com.xsj.blog.model.Blog">
     insert into b_blog
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="title != null" >
+      <if test="title != null">
         title,
       </if>
-      <if test="aId != null" >
+      <if test="aId != null">
         a_id,
       </if>
-      <if test="createtime != null" >
+      <if test="createtime != null">
         createtime,
       </if>
-      <if test="update != null" >
+      <if test="update != null">
         update,
       </if>
-      <if test="content != null" >
+      <if test="content != null">
         content,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="title != null" >
+      <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="aId != null" >
+      <if test="aId != null">
         #{aId,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null" >
+      <if test="createtime != null">
         #{createtime,jdbcType=DATE},
       </if>
-      <if test="update != null" >
+      <if test="update != null">
         #{update,jdbcType=DATE},
       </if>
-      <if test="content != null" >
+      <if test="content != null">
         #{content,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xsj.blog.model.Blog" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.xsj.blog.model.Blog">
     update b_blog
-    <set >
-      <if test="title != null" >
+    <set>
+      <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="aId != null" >
+      <if test="aId != null">
         a_id = #{aId,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null" >
+      <if test="createtime != null">
         createtime = #{createtime,jdbcType=DATE},
       </if>
-      <if test="update != null" >
+      <if test="update != null">
         update = #{update,jdbcType=DATE},
       </if>
-      <if test="content != null" >
+      <if test="content != null">
         content = #{content,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xsj.blog.model.Blog" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xsj.blog.model.Blog">
     update b_blog
     set title = #{title,jdbcType=VARCHAR},
       a_id = #{aId,jdbcType=INTEGER},
@@ -110,7 +239,7 @@
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.xsj.blog.model.Blog" >
+  <update id="updateByPrimaryKey" parameterType="com.xsj.blog.model.Blog">
     update b_blog
     set title = #{title,jdbcType=VARCHAR},
       a_id = #{aId,jdbcType=INTEGER},

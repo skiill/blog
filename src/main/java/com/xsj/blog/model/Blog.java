@@ -14,6 +14,8 @@ public class Blog implements Serializable {
 
     private Date update;
 
+    private Integer start;
+
     private String content;
 
     private static final long serialVersionUID = 1L;
@@ -56,6 +58,14 @@ public class Blog implements Serializable {
 
     public void setUpdate(Date update) {
         this.update = update;
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
     }
 
     public String getContent() {
